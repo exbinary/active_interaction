@@ -589,6 +589,41 @@ describe ActiveInteraction::Base do
         expect(result).to be false
       end
     end
+
+    context 'multi-part date values' do
+      let(:described_class) do
+        Class.new(TestInteraction) do
+          date :thing,
+            default: nil
+
+          def execute
+            given?(:thing)
+          end
+        end
+      end
+
+      it 'is false when the input is not given' do
+        expect(result).to be false
+      end
+
+      it 'is true when the input is given' do
+        inputs.merge!(
+          'thing(1i)' => '2020',
+          'thing(2i)' => '12',
+          'thing(3i)' => '31'
+        )
+        expect(result).to be true
+      end
+
+      it 'is true when the input is given' do
+        inputs.merge!(
+          'thing(1i)' => nil,
+          'thing(2i)' => nil,
+          'thing(3i)' => nil
+        )
+        expect(result).to be true
+      end
+    end
   end
 
   context 'inheritance' do
