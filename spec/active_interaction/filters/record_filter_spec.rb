@@ -141,6 +141,30 @@ describe ActiveInteraction::RecordFilter, :filter do
         end
       end
     end
+
+    context 'with an empty string value' do
+      let(:value) { '' }
+
+      before do
+        options[:finder] = :finds_nil  # what a typical `.find` would do given an empty string
+      end
+
+      context 'optional' do
+        include_context 'optional'
+
+        it 'returns the default' do
+          expect(result).to eql options[:default]
+        end
+      end
+
+      context 'required' do
+        include_context 'required'
+
+        it 'raises an error' do
+          expect { result }.to raise_error ActiveInteraction::MissingValueError
+        end
+      end
+    end
   end
 
   describe '#clean' do
